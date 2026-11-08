@@ -28,6 +28,100 @@ For the full walkthrough, see [Solana: Creating a trading and sniping pump.fun b
 
 ---
 
+## Paper desk on this fork
+
+This fork adds a **paper-only** five-agent desk. It does not sign, broadcast, fund, or hand a coin to the upstream trader. `paper_desk live` exits 2 even if `SOLANA_PRIVATE_KEY` or `GMGN_PRIVATE_KEY` is set. Nothing here turns paper mode into live mode.
+
+The sections below this one are the upstream live bot. Do not run `pump_bot` for the paper desk.
+
+Pinned sources, recorded in [NOTICE](NOTICE):
+
+| Source | Commit |
+|---|---|
+| [chainstacklabs/pumpfun-bonkfun-bot](https://github.com/chainstacklabs/pumpfun-bonkfun-bot) (Apache-2.0) | `a22893ba0a17117fd27977284379f168ce118c69` |
+| [GMGNAI/gmgn-skills](https://github.com/GMGNAI/gmgn-skills) v1.7.1 (MIT) | `6a04e1f00b5463cfc965e41003ca0c7c2db5b69f` |
+
+Field-level rules, coverage gaps, and the recap definitions are in [docs/paper-desk.md](docs/paper-desk.md).
+
+### Install
+
+Python 3.11+. From this directory, with no git checkout required if you unpacked the source zip:
+
+```bash
+uv sync
+uv pip install -e .
+cp .env.example .env
+```
+
+`uv sync` installs the existing bot dependencies (including `aiohttp` and `pyyaml`). The paper desk adds no extra packages.
+
+### Credentials
+
+Edit `.env`. Real-market paper mode needs one read-only value:
+
+| Variable | Required for 24h paper | Used for |
+|---|---|---|
+| `GMGN_API_KEY` | yes | GMGN OpenAPI `X-APIKEY`. Apply at https://gmgn.ai/ai |
+| `GMGN_PLAN` | no (default `free`) | Documented bucket: free 5/5, plus 20/20, pro 50/50 |
+| `SOLANA_NODE_WSS_ENDPOINT` | no | Upstream logs listener for pump.fun and blocks listener for letsbonk.fun |
+| `GEYSER_ENDPOINT`, `GEYSER_API_TOKEN`, `GEYSER_AUTH_TYPE` | no | Upstream geyser listener for both launchpads. Shreds are refused |
+| `SOLANA_NODE_RPC_ENDPOINT` | no | Unused by the paper desk |
+| `SOLANA_PRIVATE_KEY`, `GMGN_PRIVATE_KEY`, `KEYSTORE_PASSWORD` | no | Unused. Ignored if set |
+
+`GMGN_PRIVATE_KEY` in the GMGN CLI is a request-signing key, not a chain key. This desk never sends signed GMGN routes.
+
+Solana, Base, and BSC are scanned by GMGN rank (scout) and the smart-money feed (whale). Pump.fun and letsbonk.fun launches are Solana-only: the upstream listeners plus GMGN `POST /v1/trenches` for platforms `Pump.fun` and `letsbonk`. There is no Base or BSC launchpad listener. Robinhood is not queried.
+
+### Check, then demo, then a 24h paper session
+
+```bash
+paper_desk preflight
+paper_desk demo
+paper_desk paper --duration 24h --cash 500
+paper_desk status
+paper_desk recap
+```
+
+`preflight` writes `data/paper_desk/preflight.json` and does **not** start the 24h session. Exit 0 means the report was written. `ready_for_paper` inside it is what says the GMGN key worked.
+
+`demo` is a labeled synthetic scenario. It is not market data and not a trading result.
+
+`paper --duration 24h` is the real-market session. It starts only when `GMGN_API_KEY` is set, then stops itself at 24 hours and writes `report.md`. If the key is missing it exits 3 and writes `data/paper_desk/not_started.json`. Resume an interrupted session with `paper_desk paper --resume <session-id>` (the original end time is kept; cash is not reset).
+
+### Keyless 24h observation
+
+Observation does not use GMGN, an RPC, or a wallet. It does not open positions or report a PnL. Safety thresholds are the same constants as paper mode and cannot be loosened from `config/observe.yaml`.
+
+```bash
+paper_desk observe-preflight
+paper_desk observe --duration 24h
+paper_desk observe-status
+paper_desk observe-recap
+```
+
+Files land in `data/observe/<session>/`: `manifest.json` (`OBSERVATION_ONLY`), `health.json`, `status.json`, `checkpoint.json`, `observe.sqlite`, and at the end `report.json` and `report.md`. PnL, win rate, and best/worst trade are `N/A`. The virtual balance line says `unused_not_deployed`.
+
+Whale stays unavailable (there is no free performance-ranked smart-money feed). Exit stays idle. Scout and sniper still need two distinct votes, and a passing pair is logged as `filters_passed_not_traded` with no order. DexScreener boosts are not used: they are paid promotion, not organic momentum.
+
+Without the console script:
+
+```bash
+PYTHONPATH=src python -m paper_desk preflight
+PYTHONPATH=src python -m paper_desk paper --duration 24h --cash 500
+```
+
+Tests, offline, no funds:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests/paper_desk -v
+```
+
+### What the agents do
+
+An entry needs two distinct fresh bullish votes among scout, whale, and sniper on the same chain and contract, plus a shield clearance. Shield and exit do not vote. Exits do not wait for a vote. The -6% level is a trigger; a gapped quote fills at the observed price, not at -6%. Starting cash is $500. At most $50 is deployed per token and at most 10 positions are open. Ungraduated bonding curves are blocked: virtual reserves are not treated as locked liquidity.
+
+The rank, smart-money, and trenches feeds are samples. The session log states the universe, rate limits, and outages. A failed or stale read does not invent a price or a safety pass.
+
 ## Getting started
 
 ### 1. Prerequisites
