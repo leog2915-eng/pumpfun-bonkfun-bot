@@ -88,6 +88,21 @@ paper_desk recap
 
 `paper --duration 24h` is the real-market session. It starts only when `GMGN_API_KEY` is set, then stops itself at 24 hours and writes `report.md`. If the key is missing it exits 3 and writes `data/paper_desk/not_started.json`. Resume an interrupted session with `paper_desk paper --resume <session-id>` (the original end time is kept; cash is not reset).
 
+### Keyless 24h observation
+
+Observation does not use GMGN, an RPC, or a wallet. It does not open positions or report a PnL. Safety thresholds are the same constants as paper mode and cannot be loosened from `config/observe.yaml`.
+
+```bash
+paper_desk observe-preflight
+paper_desk observe --duration 24h
+paper_desk observe-status
+paper_desk observe-recap
+```
+
+Files land in `data/observe/<session>/`: `manifest.json` (`OBSERVATION_ONLY`), `health.json`, `status.json`, `checkpoint.json`, `observe.sqlite`, and at the end `report.json` and `report.md`. PnL, win rate, and best/worst trade are `N/A`. The virtual balance line says `unused_not_deployed`.
+
+Whale stays unavailable (there is no free performance-ranked smart-money feed). Exit stays idle. Scout and sniper still need two distinct votes, and a passing pair is logged as `filters_passed_not_traded` with no order. DexScreener boosts are not used: they are paid promotion, not organic momentum.
+
 Without the console script:
 
 ```bash

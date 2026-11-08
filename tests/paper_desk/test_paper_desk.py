@@ -695,7 +695,7 @@ class SessionTests(unittest.TestCase):
             "Keypair.from",
             "solders.keypair",
         )
-        for path in (SRC / "paper_desk").glob("*.py"):
+        for path in (SRC / "paper_desk").rglob("*.py"):
             text = path.read_text(encoding="utf-8")
             for token in banned:
                 self.assertNotIn(token, text, f"{path.name} contains {token}")

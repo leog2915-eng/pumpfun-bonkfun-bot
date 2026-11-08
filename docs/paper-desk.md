@@ -81,3 +81,19 @@ paper_desk recap
 ```
 
 The process runs until the deadline, then writes the report and marks the manifest completed. It does not flatten open lots at the deadline, so unrealized can remain. It does not start a live trader afterward.
+
+## Observation mode
+
+`paper_desk observe --duration 24h` is a separate database under `data/observe/`. Manifest mode is `OBSERVATION_ONLY`. It does not call GMGN, an RPC, a signer, or `execute_trade`.
+
+Public reads, capped at 10 requests per minute each:
+
+- GeckoTerminal `trending_pools` and `new_pools` for solana, base, and bsc. One list per minute, 20 rows. That is the sample, not every token and not every mint.
+- RugCheck `GET /v1/tokens/{mint}/report` for Solana enrichment. `lpLockedPct` is a 0-100 percent. A value of 100 is ratio 1, but it is not a verified lock unless `lockers` names a non-burn locker and `lockerScanStatus` is not `none`, with a permanent flag or a future unlock time. Empty lockers leave expiry unknown.
+- GoPlus token security for Base (`8453`) and BSC (`56`). `is_honeypot` of `0` is no and `1` is yes.
+
+`creatorBalance`, `creator_percent`, and `owner_percent` are not dev-team holdings. `graphInsidersDetected` is not bundled supply. Those fields are stored as ignored evidence. Missing dev-team rate or bundled-supply ratio stays unknown and blocks. `pump-fun` pools are ungraduated bonding curves and are blocked. The checked AMM ids are `uniswap-v4-base`, `pancakeswap_v2`, `meteora`, `meteora-damm-v2`, `pumpswap`, and `raydium`. Any other dex id stays unknown.
+
+Whale is unavailable and does not vote. Exit is idle because there are no positions. Quorum is still two distinct votes among scout and sniper. Shield does not vote. A pair that would pass is recorded as `filters_passed_not_traded`.
+
+The recap uses `N/A` for PnL, win rate, best trade, and worst trade. It does not print those as zero. Heartbeat files are `health.json`, `status.json`, and `checkpoint.json`.

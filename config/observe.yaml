@@ -1,0 +1,23 @@
+# Free keyless observation profile.
+# Safety rules are not keys here. Lock must stay at 100% (ratio >= 1),
+# dev-team holdings must stay strictly under 5%, bundled supply must stay
+# an explicit zero, and the -6% stop trigger is unchanged.
+# Provider budgets cannot be raised above 10 requests/minute.
+
+chains:
+  - sol
+  - base
+  - bsc
+poll_seconds: 60
+gecko_per_minute: 10
+rugcheck_per_minute: 10
+goplus_per_minute: 10
+enrich_per_cycle: 2
+scout_min_spike_pct: "15"
+scout_min_spike_volume_usd: "25000"
+scout_min_gainer_pct: "25"
+scout_min_gainer_volume_usd: "10000"
+quote_max_age_seconds: 20
+security_max_age_seconds: 120
+min_liquidity_usd: "1000"
+vote_ttl_seconds: 90

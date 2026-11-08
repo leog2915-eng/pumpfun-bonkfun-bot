@@ -16,6 +16,13 @@ GMGN OpenAPI adapter
   calls the read-only routes documented by that release. Signed swap, strategy,
   follow-wallet, and cooking routes are not implemented.
 
+Keyless observation reads, no code copied:
+  GeckoTerminal public API (trending_pools, new_pools) at api.geckoterminal.com
+  RugCheck public report GET /v1/tokens/{mint}/report (OpenAPI at api.rugcheck.xyz)
+  GoPlus public token security (BSC chain id 56, Base chain id 8453)
+  DexScreener's keyless lists were checked and are not polled: token boosts
+  are paid promotion, and token profiles overlap the GeckoTerminal sample.
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
