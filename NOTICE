@@ -1,0 +1,35 @@
+Paper desk in this fork.
+
+Upstream trading bot
+  Repository: https://github.com/chainstacklabs/pumpfun-bonkfun-bot
+  Pinned commit: a22893ba0a17117fd27977284379f168ce118c69
+  License: Apache-2.0 (see LICENSE)
+  The launch listeners and decoders under src/monitoring and src/platforms
+  are used read-only. This fork does not change their trading or signing paths.
+
+GMGN OpenAPI adapter
+  Repository: https://github.com/GMGNAI/gmgn-skills
+  Pinned commit: 6a04e1f00b5463cfc965e41003ca0c7c2db5b69f (v1.7.1)
+  License: MIT
+  Copyright (c) 2025 GMGN
+  The paper desk does not vendor that TypeScript tree. src/paper_desk/gmgn.py
+  calls the read-only routes documented by that release. Signed swap, strategy,
+  follow-wallet, and cooking routes are not implemented.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.

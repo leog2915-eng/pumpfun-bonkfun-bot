@@ -1,0 +1,46 @@
+# Paper desk defaults. Hard limits are not keys here: max $50 per token,
+# 10 open positions, a -6% stop trigger, dev holdings strictly under 5%,
+# and fully locked liquidity (lock_percent >= 1) cannot be loosened.
+#
+# price_change_percent is read as percent points (15 means 15%).
+
+buy_usd: "50"
+tp1_multiple: "2"
+tp1_fraction: "0.50"
+tp2_multiple: "3"
+tp2_fraction: "0.25"
+trail_drawdown: "0.15"
+vote_ttl_seconds: 90
+quote_max_age_seconds: 20
+security_max_age_seconds: 120
+min_liquidity_usd: "1000"
+slippage: "0.01"
+max_impact: "0.10"
+default_fee_bps: 30
+whale_window_seconds: 1800
+whale_min_wallets: 2
+whale_min_buy_usd: "100"
+scout_min_spike_pct: "15"
+scout_min_spike_volume_usd: "25000"
+scout_min_gainer_pct: "25"
+scout_min_gainer_volume_usd: "10000"
+scout_spike_interval: 5m
+scout_gainer_interval: 1h
+rank_limit: 50
+chains:
+  - sol
+  - base
+  - bsc
+listener: auto
+poll_seconds: 60
+mark_seconds: 20
+entry_retry_seconds: 30
+queue_size: 256
+gmgn_plan: free
+evm_gas_units: 300000
+max_plausible_gas_usd: "5"
+gas_fallback_usd:
+  sol: "0.02"
+  base: "0.02"
+  bsc: "0.05"
+trenches_limit: 80
